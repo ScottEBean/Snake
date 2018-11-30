@@ -120,7 +120,7 @@ Game.graphics = (function () {
 		var blocks = [];
 		var count = 0;
 
-		while (count < 15) {
+		while (count <= 15) {
 			let testX = Random.nextRange(0, 29) * BLOCKSIZE;
 			let testY = Random.nextRange(0, 29) * BLOCKSIZE;
 			if (!BlocksIntersect(blocks, testX, testY)) {

@@ -37,13 +37,13 @@ Game.screens['game-play'] = (function (input, graphics, records, menu) {
 	}
 
 	function initialize() {
-		score = 0;
-		speed = 0;
-		Game.records.initialize(); 
-		ObsBlks.draw();
-		//snake.draw();
-		createApple();
-		apple.draw();
+		// score = 0;
+		// speed = 0;
+		// Game.records.initialize(); 
+		// //ObsBlks.draw();
+		// //snake.draw();
+		// createApple();
+		// apple.draw();
 
 		keyboard.registerCommand(KeyEvent.DOM_VK_LEFT, snake.moveLeft(-speed));
 		keyboard.registerCommand(KeyEvent.DOM_VK_RIGHT, snake.moveRight(speed));
