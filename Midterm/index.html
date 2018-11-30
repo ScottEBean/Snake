@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Game</title>
+	<link rel="stylesheet" href="styles/game.css">
+</head>
+
+<body onload="Game.menu.initialize()">
+	<div id="header">
+		<h1>Snake</h1>
+		<h1>|</h1>
+	</div>
+	<div id="game">
+
+		<div id="main-menu" class="screen">
+			<ul class="menu">
+				<li><button id="id-new-game" class="button">New&nbsp;Game</button></li>
+				<li><button id="id-high-scores" class="button">High&nbsp;Scores</button></li>
+				<li><button id="id-help" class="button"> Help</button></li>
+				<li><button id="id-about" class="button">About</button></li>
+			</ul>
+		</div>
+
+		<div id="game-play" class="canvases screen">
+			<canvas class="canvas" id="backgroundCanvas" width="750" height="750" style="z-index: 1; "></canvas>
+			<canvas class="canvas" id="gameCanvas" width="750" height="750" style="z-index: 2; "></canvas>
+			<canvas class="canvas" id="topLayerCanvas" width="750" height="750" style="z-index: 3; "></canvas>
+		</div>
+
+		<div id="high-scores" class="screen">
+			<h1>High Scores</h1>
+			<ol>
+				<li id="hs4"></li>
+				<li id="hs3"></li>
+				<li id="hs2"></li>
+				<li id="hs1"></li>
+				<li id="hs0"></li>
+			</ol>
+			<ul class="menu">
+				<li><button id="id-high-scores-back" class="button">Back</button></li>
+			</ul>
+		</div>
+
+		<div id="help" class="screen">
+			<h1>Help</h1>
+			Controls<br>
+			^<br>
+			< v >
+				<p>Go: Space then pick a direction</p>
+				<p>Main Menu: Esc</p>
+				<ul class="menu">
+					<li><button id="id-help-back" class="button">Back</button></li>
+				</ul>
+		</div>
+
+		<div id="about" class="screen">
+			<h1>About</h1>
+			<p>Developed by</p>
+			<p>Scott Bean</p>
+			<p>For CS 5410 Game Devlopment</p>
+			<p>Taught by and with example code used in this project by</p>
+			<p>Dr. James Dean Mathias</p>
+			<ul class="menu">
+				<li><button id="id-about-back" class="button">Back</button></li>
+			</ul>
+		</div>
+
+	</div>
+
+	<script>
+		let Game = {
+			screens: {},
+		};
+	</script>
+	
+	<script src="scripts/about.js"></script>
+	<script src="scripts/help.js"></script>
+	<script src="scripts/highscores.js"></script>
+	<script src="scripts/menu.js"></script>
+	<script src="scripts/mainmenu.js"></script>		
+	<script src="scripts/records.js"></script>	
+	<script src="scripts/input.js"></script>
+	<script src="scripts/random.js"></script>
+	<script src="scripts/graphics.js"></script>
+	<script src="scripts/game.js"></script>
+</body>
+
+</html>

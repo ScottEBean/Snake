@@ -1,0 +1,127 @@
+
+:root {
+    --colorDefault: #00d0d0;    
+}
+
+@font-face{
+	font-family: 'Roboto', sans-serif;
+	src: url('https://fonts.googleapis.com/css?family=Roboto');
+}
+
+* {
+ font-size: 100%;
+ font-family: 'Roboto', sans-serif;
+ color: var(--colorDefault);
+}
+
+body{	
+	background-color: #000000;		
+}
+
+#header{
+	text-align: center;
+	padding: 5px;
+	font-size: 40px;
+}
+
+#game-play {
+	width: 750px;
+	height: 750px;
+	margin: 0 auto;
+	position: relative;		
+}
+
+.canvas {	
+	top: 0;
+	left: 0;
+	position: absolute;
+	border: 10px solid rgba(0, 0, 0,0);
+}
+
+#backgroundCanvas{
+	border: 10px solid #00d0d0;	
+}
+
+#gameCanvas{
+	background-color: rgba(255, 0, 0, 0);
+}
+
+#topLayerCanvas{
+	background-color: rgba(0, 0, 255, 0);
+}
+
+#game .screen {	
+	width: 500;
+	height: 500;
+	display: none;
+	z-index: 10;
+}
+
+#game .screen.active {
+	font-family: 'Roboto', sans-serif;
+	font-size: 35px;
+	text-align: center;
+	display: block;	
+}
+
+#main-menu {
+	padding-top: 1em;
+	cursor: pointer;
+	font-size: 0.75em;
+}
+
+ul.menu {
+	text-align: center;
+	padding: 0;
+	margin: 0;
+	list-style: none;
+}
+
+ul.menu li {
+	margin: 0.8em 0;
+}
+
+ul.menu li .button {
+	font-family: 'Roboto', sans-serif;
+	font-size: 35px;	
+	width: 10em;		
+  border: none;
+	color: #00d0d0;
+	background-color: black;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;  
+  margin: 4px 2px;
+  cursor: pointer;
+}
+
+ul.menu li .button:hover {
+	color: black;
+	background-color: #00d0d0;
+}
+
+ul.menu li button:active {
+	color: #CECEF6;
+	background: rgb(0, 0, 0);
+}
+
+#game div h1 {
+	font-size: 1em;
+	text-align: center;
+}
+
+#high-scores ol {
+	text-align: center;
+	padding: 0;
+	margin: 0;
+	list-style: none;
+}
+
+#game div p {
+	font-size: 0.5em;
+}
+
+#about p {
+	text-align: center;
+}
