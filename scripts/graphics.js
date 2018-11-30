@@ -185,7 +185,7 @@ Game.graphics = (function () {
 			return segments;
 		}
 
-		that.addSegements = function () {
+		that.addSegments = function () {
 			let lastSegX = null;
 			let lastSegY = null;
 
@@ -253,8 +253,14 @@ Game.graphics = (function () {
 
 	function Segment(spec) {
 		that = {};
-		that.x = spec.x;
-		that.y = spec.y;
+		var coords = {
+			x: spec.x,
+			y: spec.y
+		};
+
+		that.getCoords = function () {
+			return coords;
+		}
 
 		that.draw = function () {
 			gameContext.save();

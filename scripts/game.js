@@ -37,8 +37,8 @@ Game.screens['game-play'] = (function (input, graphics, records, menu) {
 	}
 
 	function initialize() {
-		// score = 0;
-		// speed = 0;
+		score = 0;
+		speed = 0;
 		// Game.records.initialize(); 
 		// //ObsBlks.draw();
 		// //snake.draw();
