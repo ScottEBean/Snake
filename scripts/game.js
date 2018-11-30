@@ -8,42 +8,20 @@ Game.screens['game-play'] = (function (input, graphics, records, menu) {
 
 	var keyboard = input.Keyboard();
 	var scores = records;
+	var apple = graphics.Apple();
 	var snake = graphics.Snake()
-	var ObsBlks = graphics.Obstacles();
+	var obstacles = graphics.Obstacles();
 	var score = 0;
 	var speed = 0;
-
-
-	var apple = null;
-
-	function createApple() {
-		var appleX = Random.nextRange(0, 29) * BLOCKSIZE;
-		var appleY = Random.nextRange(0, 29) * BLOCKSIZE;
-		let verified = !graphics.BlocksIntersect(ObsBlks.getBlocks(), appleX, appleY) && !graphics.BlocksIntersect(snake.getSegments(), appleX, appleY);
-
-		while (!verified) {
-			appleX = Random.nextRange(0, 29) * BLOCKSIZE;
-			appleY = Random.nextRange(0, 29) * BLOCKSIZE;
-			verified = !graphics.BlocksIntersect(ObsBlks.getBlocks(), appleX, appleY) && !graphics.BlocksIntersect(snake.getSegments(), appleX, appleY);
-		}
-
-		apple = graphics.Apple({
-			x: appleX,
-			y: appleY,
-		});
-
-		console.log(apple.getCoords().x);
-		console.log(apple.getCoords().y);
-	}
+	var didEat = false;
 
 	function initialize() {
 		score = 0;
 		speed = 0;
-		// Game.records.initialize(); 
-		// //ObsBlks.draw();
-		// //snake.draw();
-		// createApple();
-		// apple.draw();
+		Game.records.initialize();
+		snake.init();
+		snake.draw();
+		obstacles.draw();
 
 		keyboard.registerCommand(KeyEvent.DOM_VK_LEFT, snake.moveLeft(-speed));
 		keyboard.registerCommand(KeyEvent.DOM_VK_RIGHT, snake.moveRight(speed));
@@ -58,27 +36,44 @@ Game.screens['game-play'] = (function (input, graphics, records, menu) {
 		});
 	}
 
+	function createApple() {
+		var appleX = Random.nextRange(0, 29) * BLOCKSIZE;
+		var appleY = Random.nextRange(0, 29) * BLOCKSIZE;
+		let verified = !graphics.BlocksIntersect(obstacles.getBlocks(), appleX, appleY) && !graphics.BlocksIntersect(snake.getSegments(), appleX, appleY);
+
+		while (!verified) {
+			appleX = Random.nextRange(0, 29) * BLOCKSIZE;
+			appleY = Random.nextRange(0, 29) * BLOCKSIZE;
+			verified = !graphics.BlocksIntersect(obstacles.getBlocks(), appleX, appleY) && !graphics.BlocksIntersect(snake.getSegments(), appleX, appleY);
+		}
+
+		apple.set({ x: appleX, y: appleY });
+
+		console.log('appleX: ' + apple.getCoords().x);
+		console.log('appleY: ' + apple.getCoords().y);
+	}
+
 	function detectCollision() {
 		let head = snake.getHead();
 
 		//walls and ceiling
-		if (head.x <= 0
-			|| head.x + BLOCKSIZE >= CANVASWIDTH
-			|| head.y <= 0
-			|| head.y >= CANVASWIDTH) {
+		if (head.getCoords().x <= 0 ||
+				head.getCoords().x + BLOCKSIZE >= CANVASWIDTH ||
+				head.getCoords().y <= 0 ||
+				head.getCoords().y >= CANVASWIDTH) {
 			cancelNextRequest = true;
-			gameOver();
+			//gameOver();
 		}
 
 		//obstacles
-		if (!graphics.BlocksIntersect(ObsBlks.getBlocks, head.x, head.y)) {
-			cancelNextRequest = true;
-			gameOver();
-		}
+		// if (graphics.BlocksIntersect(obstacles.getBlocks, head.getCoords().x, head.getCoords().y)) {
+		// 	cancelNextRequest = true;
+		// 	gameOver();
+		// }
 
 		//apple
-		if (graphics.intersection(head.x, head.x + BLOCKSIZE, head.y, head.y + BLOCKSIZE, apple.x, apple.x + BLOCKSIZE, apple.y, apple.y + BLOCKSIZE)) {
-			snake.addSegments();
+		if (graphics.intersection(head.x, head.x + BLOCKSIZE, head.y, head.y + BLOCKSIZE, apple.getCoords().x, apple.getCoords().x + BLOCKSIZE, apple.getCoords().y, apple.getCoords().y + BLOCKSIZE)) {
+			didEat = true;
 			score++;
 			createApple();
 		}
@@ -86,14 +81,14 @@ Game.screens['game-play'] = (function (input, graphics, records, menu) {
 		// snake collides with self			
 		if (SelfCollision(head)) {
 			cancelNextRequest = true;
-			gameOver();
+			//gameOver();
 		}
 	}
 
 	function SelfCollision(head) {
-		if (snake.getSegments.length < 4) { return false; }
-		for (let i = 3; i < snake.segments.length; i++) {
-			let seg = snake.getSegments[i];
+		if (snake.getSegments().length < 4) { return false; }
+		for (let i = 3; i < snake.getSegments().length; i++) {
+			let seg = snake.getSegments()[i];
 			if (graphics.intersection(head.x, head.x + BLOCKSIZE, head.y, head.y + BLOCKSIZE, seg.x, seg.x + BLOCKSIZE, seg.y, seg.y + BLOCKSIZE)) {
 				return true;
 			}
@@ -101,21 +96,23 @@ Game.screens['game-play'] = (function (input, graphics, records, menu) {
 		return false;
 	}
 
-
-
 	function processInput(elapsedTime) {
 		keyboard.update(elapsedTime);
 	}
 
 	function gameOver() {
 		graphics.setLargeTextProperties();
-		graphics.drawText("Game Over :(", 141, 350);
-		//setTimeout(function () { menu.showScreen('main-menu'), 1000 });
+		graphics.drawText("Game Over :(", 25, 350);
+		setTimeout(function () { menu.showScreen('main-menu'), 1000 });
 		scores.update(score);
 	}
 
 	function go() {
 		if (speed > 0) { return; }
+		speed = 150;
+		snake.draw();
+		apple.draw();
+		//obstacles.draw();
 		graphics.clearTopLayer();
 		graphics.setCountdownTextProperties();
 		graphics.drawText("3", 187, 250);
@@ -126,9 +123,8 @@ Game.screens['game-play'] = (function (input, graphics, records, menu) {
 		setTimeout(function () { graphics.clearTopLayer(); }, 3300);
 		setTimeout(function () { speed = 150; }, 3300);
 	}
-
+	
 	function run() {
-		initialize();
 		lastTimeStamp = performance.now();
 		cancelNextRequest = false;
 		requestAnimationFrame(gameLoop);
@@ -137,7 +133,7 @@ Game.screens['game-play'] = (function (input, graphics, records, menu) {
 
 	function update(elapsedTime) {
 		detectCollision();
-		snake.update();
+		snake.update(didEat);
 	}
 
 	function render() {

@@ -83,7 +83,7 @@ Game.graphics = (function () {
 
 	function BlocksIntersect(blockArr, x, y) {
 		if (blockArr.length == 0) { return false; }
-		for (let i = 0; i < blockArr.length - 1; i++) {
+		for (let i = 0; i < blockArr.length; i++) {
 			var r1 = blockArr[i].getCoords();
 			if (intersection(r1.x, r1.x + BLOCKSIZE, r1.y, r1.y + BLOCKSIZE, x, x + BLOCKSIZE, y, y + BLOCKSIZE)) {
 				return true;
@@ -92,12 +92,17 @@ Game.graphics = (function () {
 		return false;
 	}
 
-	function Apple(spec) {
+	function Apple() {
 		that = {};
 		var coords = {
-			x: spec.x,
-			y: spec.y
+			x: 0,
+			y: 0
 		};
+
+		that.set = function (spec) {
+			coords.x = spec.x;
+			coords.y = spec.y;
+		}
 
 		that.getCoords = function () {
 			return coords;
@@ -124,7 +129,7 @@ Game.graphics = (function () {
 			let testX = Random.nextRange(0, 29) * BLOCKSIZE;
 			let testY = Random.nextRange(0, 29) * BLOCKSIZE;
 			if (!BlocksIntersect(blocks, testX, testY)) {
-				blocks.push(Obstacle({ x: testX, y: testY }));
+				blocks.push(new Obstacle({ x: testX, y: testY }));
 				count++;
 			}
 		}
@@ -167,15 +172,20 @@ Game.graphics = (function () {
 
 	function Snake(spec) {
 		that = {};
-		that.dirX = 0;
-		that.dirY = 0;
+		var dirX = 0;
+		var dirY = 0;
 		var segments = [];
+		var didEat = false;
 
-		segments.push(Segment({
-			fillStyle: bodyFillStyle,
-			x: Random.nextRange(0, 49) * 10,
-			y: Random.nextRange(0, 49) * 10
-		}));
+		that.init = function () {
+			segments.push(new Segment({
+				x: Random.nextRange(0, 29) * 10,
+				y: Random.nextRange(0, 29) * 10
+			}));
+			console.log(segments[0]);
+			console.log('headx: ' + segments[0].getCoords().x);
+			console.log('heady: ' + segments[0].getCoords().y);
+		}
 
 		that.getHead = function () {
 			return segments[0];
@@ -185,37 +195,22 @@ Game.graphics = (function () {
 			return segments;
 		}
 
-		that.addSegments = function () {
-			let lastSegX = null;
-			let lastSegY = null;
-
-			for (let i = 0; i < 3; i++) {
-				if (Math.abs(dirX) > 0) {
-					if (segments[segments.length - 1].x < segments[0].x) {
-						lastSegX = segments[segments.length - 1].x - BLOCKSIZE;
-					} else {
-						lastSegX = segments[segments.length - 1].x + BLOCKSIZE;
-					}
-				} else {
-					if (segments[segments.length - 1].y < segments[0].y) {
-						lastSegX = segments[segments.length - 1].y - BLOCKSIZE;
-					} else {
-						lastSegX = segments[segments.length - 1].y + BLOCKSIZE;
-					}
-				}
-
-				segments.push(Segment({
-					fillStyle: bodyFillStyle,
-					x: lastSegX,
-					y: lastSegY
-				}));
+		that.draw = function () {
+			for (let i = 0; i < segments.length; i++) {
+				segments[i].draw();
 			}
 		}
 
 		that.update = function () {
-			const head = { x: segments[0].x + dirX, y: segments[0].y + dirY };
+			segments[0].update({x: dirX, y: dirY});
+			const head = segments[0];
 			segments.unshift(head);
-			segments.pop();
+
+			if (didEat) {
+				didEat = false;
+			} else {
+				segments.pop();
+			}
 		}
 
 		that.moveUp = function (dy) {
@@ -240,13 +235,7 @@ Game.graphics = (function () {
 			if (dx > 0) { return; }
 			dirX = dx;
 			dirY = 0;
-		}
-
-		that.draw = function () {
-			for (let i = 0; i < segments.length; i++) {
-				segments[i].draw();
-			}
-		};
+		}	
 
 		return that;
 	}
@@ -262,18 +251,22 @@ Game.graphics = (function () {
 			return coords;
 		}
 
+		that.update = function(spec){
+			coords.x = spec.x;
+			coords.y = spec.y;
+		}
+
 		that.draw = function () {
 			gameContext.save();
-			gameContext.fillStyle = spec.fillStyle;
+			gameContext.fillStyle = bodyFillStyle;
 			gameContext.strokestyle = 'black';
-			gameContext.fillRect(x, y, BLOCKSIZE, BLOCKSIZE);
-			gameContext.strokeRect(x, y, BLOCKSIZE, BLOCKSIZE);
+			gameContext.fillRect(coords.x, coords.y, BLOCKSIZE, BLOCKSIZE);
+			gameContext.strokeRect(coords.x, coords.y, BLOCKSIZE, BLOCKSIZE);
 			gameContext.restore();
 		}
 
 		return that;
 	}
-
 
 	return {
 		drawBackground: drawBackground,
