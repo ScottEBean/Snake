@@ -160,15 +160,10 @@ Game.screens['game-play'] = (function (input, graphics, records, menu) {
 			r2b < r1t);
 	}
 
-	function SelfCollision(head) {
-		for (let i = 3; i < snake.length; i++) {
-			if (head.row == snake[i].row && head.col == snake[i].col) { return true; }
-		}
-		return false;
-	}
+	
 
 	function gameLoop(currentTime) {
-		let elapsedTime = currentTime - lastTimeStamp;
+		let elapsedTime = Math.abs(currentTime - lastTimeStamp);
 		lastTimeStamp = currentTime;
 		processInput(elapsedTime);
 		update(elapsedTime);
@@ -250,12 +245,19 @@ Game.screens['game-play'] = (function (input, graphics, records, menu) {
 		console.log('Snakes on a Plane!');
 	}
 
+	function SelfCollision(head) {
+		for (let i = 3; i < snake.length; i++) {
+			if (head.row == snake[i].row && head.col == snake[i].col) { return true; }
+		}
+		return false;
+	}
+
 	function update(elapsedTime) {
 			timeAccumultor -= elapsedTime;
-			if (timeAccumultor > 0) { return; }
-			timeAccumultor = 5000;
+			if (timeAccumultor > 0 || (dy == 0 && dx == 0)) { return; }
+			timeAccumultor = 150;
 			detectCollision();
-			const head = { row: snake[0].row + dy * BLOCKSIZE, col: snake[0].row + dx * BLOCKSIZE };
+			const head = { row: snake[0].row + dy, col: snake[0].col + dx };
 			snake.unshift(head);
 
 			if (didEat) {
